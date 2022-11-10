@@ -1,16 +1,64 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import ContactForm from './ContactForm/ContactForm';
+import ContactList from './ContactList/ContactList';
+import Filter from './Filter/Filter';
+import { Container } from './App.styled';
+
+export default function App() {
+  const [contacts, setContacts] = useState(
+    JSON.parse(window.localStorage.getItem('contacts'))
   );
+  const [filter, setFilter] = useState('');
+
+  const handleSubmitInfo = data => {
+    const uniqueEl = contacts.find(el => el.name === data.name);
+    uniqueEl
+      ? alert(`${data.name} is already in contacts`)
+      : setContacts(() => contacts.concat([data]));
+  };
+
+  const handleSearch = data => {
+    setFilter(data);
+  };
+
+  const filterContacts = () => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
+  const deleteContact = contactId => {
+    setContacts(prevState => {
+      return prevState.filter(contact => contact.id !== contactId);
+    });
+  };
+
+  useEffect(() => {
+    window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+
+  return (
+    <Container>
+      <h1>Phonebook</h1>
+      <ContactForm onSubmit={handleSubmitInfo} />
+      <h2>Contacts</h2>
+      <Filter onFilter={handleSearch} />
+      <ContactList
+        contacts={filterContacts()}
+        onDeleteContact={deleteContact}
+      />
+    </Container>
+  );
+}
+
+App.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.exact({
+      name: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ),
+  filter: PropTypes.string,
 };
