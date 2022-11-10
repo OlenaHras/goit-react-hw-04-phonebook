@@ -3,12 +3,18 @@ import PropTypes from 'prop-types';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
+import defaultContacts from './contacts';
 import { Container } from './App.styled';
 
 export default function App() {
-  const [contacts, setContacts] = useState(
-    JSON.parse(window.localStorage.getItem('contacts'))
-  );
+  const [contacts, setContacts] = useState(() => {
+    const savedContacts = JSON.parse(localStorage.getItem('contacts'));
+    if (savedContacts.length !== 0) {
+      return savedContacts;
+    }
+    return defaultContacts;
+  });
+
   const [filter, setFilter] = useState('');
 
   const handleSubmitInfo = data => {
