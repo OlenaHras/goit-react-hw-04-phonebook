@@ -44,7 +44,7 @@ export default function App() {
       <h1>Phonebook</h1>
       <ContactForm onSubmit={handleSubmitInfo} />
       <h2>Contacts</h2>
-      {filter && <Filter onFilter={handleSearch} />}
+      <Filter onFilter={handleSearch} />
       <ContactList
         contacts={filterContacts()}
         onDeleteContact={deleteContact}
