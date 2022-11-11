@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import { Form, SubmitButton, FormInput } from './ContactForm.styled';
 
@@ -67,3 +68,8 @@ export default function ContactForm({ onSubmit }) {
     </Form>
   );
 }
+
+ContactForm.propTypes = {
+  name: PropTypes.string,
+  number: PropTypes.string,
+};
