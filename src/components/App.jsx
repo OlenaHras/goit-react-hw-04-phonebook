@@ -3,17 +3,16 @@ import PropTypes from 'prop-types';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
-import defaultContacts from './contacts';
 import { Container } from './App.styled';
 
 export default function App() {
   const [contacts, setContacts] = useState(() => {
-    const savedContacts = JSON.parse(localStorage.getItem('contacts'));
-    if (savedContacts.length !== 0) {
-      return savedContacts;
-    }
-    return defaultContacts;
+    return JSON.parse(localStorage.getItem('contacts')) ?? [];
   });
+
+  useEffect(() => {
+    window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const [filter, setFilter] = useState('');
 
@@ -40,16 +39,12 @@ export default function App() {
     });
   };
 
-  useEffect(() => {
-    window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-
   return (
     <Container>
       <h1>Phonebook</h1>
       <ContactForm onSubmit={handleSubmitInfo} />
       <h2>Contacts</h2>
-      <Filter onFilter={handleSearch} />
+      {filter && <Filter onFilter={handleSearch} />}
       <ContactList
         contacts={filterContacts()}
         onDeleteContact={deleteContact}
